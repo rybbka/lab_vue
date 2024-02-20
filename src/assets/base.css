@@ -1,14 +1,99 @@
-body {
-  margin: 0;
-  padding: 0;
+/* base.css */
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  overflow-x: hidden;
 }
 
-.title {
-  display: flex;
-  justify-content: center;
-  padding-top: 0;
-  padding-bottom: 0;
+/* Remove default padding and margin */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
 
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+  padding-top: 2em;
+  font-family: Helvetica, sans-serif;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Basic styles for main content elements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  line-height: 1.2;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+ul, ol {
+  padding-left: 20px;
+  margin-bottom: 1rem;
+}
+
+/* Basic styles for buttons and links */
+button,
+a {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover,
+a:hover {
+  text-decoration: none;
+}
+
+.navbar, .footer {
+  position: fixed; /* or 'absolute' depending on your layout */
+  z-index: 1000; /* Ensures they appear above other content */
+  width: 100%; /* Ensures they span the full width of the viewport */
 }

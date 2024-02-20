@@ -1,13 +1,13 @@
 <template>
   <main>
-    <h1>CHESS PROBLEMS</h1>
-    <!-- Check if chessPuzzles is not null and has at least one puzzle -->
+    <h1>"THINK BEFORE YOU MOVE"</h1>
+
     <div v-if="chessPuzzles && chessPuzzles.length > 0">
-      <!-- Render the first puzzle -->
-      <ChessPuzzle :fen="chessPuzzles[0].fen" />
+      <ChessPuzzle :fen="chessPuzzles[currentIndex].fen" :currentIndex="currentIndex" :totalPuzzles="chessPuzzles.length"
+        @updateIndex="updateCurrentIndex" @fetchNewPuzzle="fetchNewPuzzle" />
     </div>
     <div v-else>
-      Loading chess puzzle...
+      Loading chess puzzles...
     </div>
   </main>
 </template>
@@ -22,11 +22,12 @@ export default {
   },
   data() {
     return {
-      chessPuzzles: null
+      chessPuzzles: null,
+      currentIndex: 0,
     };
   },
   created() {
-    this.fetchChessPuzzles(); // Call the method to fetch chess puzzles when the component is created
+    this.fetchChessPuzzles();
   },
   methods: {
     async fetchChessPuzzles() {
@@ -48,13 +49,24 @@ export default {
 
       try {
         const response = await axios.request(options);
-        console.log(response.data); // Log the response data to the console for debugging
-        // Set the fetched chess puzzles to the data property
         this.chessPuzzles = response.data.puzzles;
       } catch (error) {
-        console.error(error);
+        console.error('Fel vid hämtning av schackpussel:', error);
       }
+    },
+    updateCurrentIndex(newIndex) {
+      this.currentIndex = newIndex;
+    },
+    fetchNewPuzzle() {
+      this.currentIndex += 1;
     }
   }
 };
 </script>
+
+<style scoped>
+h1 {
+  padding-top: 20px;
+}
+
+</style>

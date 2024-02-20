@@ -1,108 +1,350 @@
 <template>
-  <div class="chess-puzzle">
-    <div class="chess-board-container">
-      <div ref="board" class="chess-board"></div>
+  <div class="container">
+    <div class="chessboard-container">
+      <div ref="board" class="board" id="board"></div>
+    </div>
+    <div class="puzzle-status">{{ puzzleStatus }}</div>
+    <div class="buttons">
+      <button @click="fetchNewPuzzle">New Puzzle</button>
+      <button @click="resetBoard()">Reset Board</button>
     </div>
   </div>
 </template>
 
 <script>
-import Chessboard from 'chessboardjs';
+import { Chessboard, INPUT_EVENT_TYPE } from 'cm-chessboard';
+import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Markers.js";
+import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog.js";
+import { Chess } from 'chess.js';
+import { markRaw } from 'vue';
+
+
 
 export default {
   props: {
-    fen: String
+    fen: String,
+    currentIndex: Number,
+    totalPuzzles: Number,
+  },
+
+  computed: {
+    puzzleStatus() {
+      return `PUZZLE ${this.currentIndex + 1} / ${this.totalPuzzles}`;
+    }
+  },
+
+  data() {
+    return {
+      chessboard: null,
+      game: new Chess(markRaw(this.fen)),
+      useCustomPieces: false,
+    };
   },
   mounted() {
-    // Render the chessboard using chessboard.js
-    Chessboard(this.$refs.board, {
-      position: this.fen,
-      draggable: false
-    });
+    this.initializeChessboard();
+  },
+  watch: {
+    fen(newFen) {
+      this.chessboard.setPosition(newFen);
+    }
+  },
+  methods: {
+    initializeChessboard() {
+
+      this.chessboard = new Chessboard(this.$refs.board, {
+        position: markRaw(this.fen),
+        assetsUrl: "./public/cm-chessboard/",
+        extensions: [
+          { class: Markers, props: { autoMarkers: MARKER_TYPE.square } },
+          { class: PromotionDialog },
+        ]
+      });
+
+      // Bind the input handler to the component's context
+      const inputHandlerBound = this.inputHandler.bind(this);
+      this.chessboard.enableMoveInput(inputHandlerBound);
+    },
+
+    inputHandler(event) {
+      console.log(event)
+      switch (event.type) {
+        case INPUT_EVENT_TYPE.moveInputStarted:
+          console.log(`moveInputStarted: ${event.squareFrom}`)
+          return true // false cancels move
+        case INPUT_EVENT_TYPE.validateMoveInput:
+          console.log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)
+          return true // false cancels move
+        case INPUT_EVENT_TYPE.moveInputCanceled:
+          console.log(`moveInputCanceled`)
+          break
+        case INPUT_EVENT_TYPE.moveInputFinished:
+          console.log(`moveInputFinished`)
+          break
+        case INPUT_EVENT_TYPE.movingOverSquare:
+          console.log(`movingOverSquare: ${event.squareTo}`)
+          break
+      }
+    },
+
+    fetchNewPuzzle() {
+      console.log('Fetch new puzzle method called');
+      this.$emit('fetchNewPuzzle');
+      // Använd detta event för att meddela din föräldrakomponent att hämta ett nytt pussel
+    },
+    resetBoard() {
+      // Återställer brädet till det aktuella FEN-läget
+      console.log('Reset board method called')
+      this.chessboard.setPosition(this.fen);
+    },
   }
-};
+}
 </script>
 
 <style scoped>
-/* Add CSS styles for the ChessPuzzle component here */
-.chess-puzzle {
-  display: flex;
-  justify-content: center;
-}
-
-.chess-board-container {
-  margin-top: 50px;
-  margin-bottom: 20px;
-}
-
-.chess-board {
-  width: 600px;
+.puzzle-status {
+  font-size: 0.8em;
+  /* Adjust the font size */
+  color: #333;
+  /* Set the text color */
+  text-align: center;
+  /* Center the text */
+  padding: 20px;
+  /* Add some padding for spacing */
+  margin: 10px 0;
+  /* Add margin for spacing from other elements */
+  width: auto;
+  /* Adjust width as needed */
 }
 </style>
 
 
 
 
-
-
-
-
-
-
-<!-- <template>
-  <div class="chess-puzzle">
-    <div class="chess-board-container">
-      <div ref="board" class="chess-board"></div>
-    </div>
-    <div class="fen-code">
-      <p>{{ fen }}</p>
-    </div>
-  </div>
-</template>
-
-<script>
-import Chessboard from 'chessboardjs'; // Import Chessboard from the chessboardjs library
-
-export default {
-  props: {
-    fen: String
-  },
-  mounted() {
-    // Log the FEN notation to verify if it's correct
-    console.log('FEN notation:', this.fen);
-
-    // Render the chessboard using chessboard.js with the pieceTheme option
-    Chessboard(this.$refs.board, {
-      pieceTheme: (piece) => {
-        // Return the path to the chess piece image based on the piece code
-        return `/img/chesspieces/wikipedia/${piece}.png`;
-      },
-      position: this.fen,
-      draggable: false
-    });
-  } // Add this closing curly brace
-}
-</script>
-
-<style scoped>
+<style>
 /* Add CSS styles for the ChessPuzzle component here */
-.chess-puzzle {
+
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.chess-board-container {
-  margin-top: 50px;
-  margin-bottom: 20px;
+.chessboard-container {
+  margin-bottom: 0.5rem;
+  /* Add margin between chessboard and buttons */
 }
 
-.chess-board {
-  width: 600px; /* Adjust the width as needed */
+.buttons {
+  margin-top: 1rem;
+  padding-bottom: 6rem;
+  /* Adjust margin top to move buttons closer */
 }
 
-.fen-code {
-  font-family: monospace;
-  color: #555;
+.buttons button {
+  margin-right: 2rem;
+  margin-left: 2rem;
+  background-color: #FFFC47;
+  /* Set to match background color */
 }
-</style> -->
+
+div.board {
+  float: center;
+  max-width: 500px;
+  /* Maximum width */
+  width: 80vw;
+  margin-bottom: 1rem;
+}
+
+.chessboard-container {
+  display: flex;
+  justify-content: center;
+  max-width: 500px;
+  /* Maximum width */
+  width: 80vw;
+  max-height: 80vh;
+  /* Maximum height */
+  margin: auto;
+}
+
+.buttons {
+
+  margin-top: 0.5rem;
+  background-color: #FFFC47;
+  /* Set to match background color */
+}
+
+.buttons {
+  display: block;
+  /* Change from flex to block */
+  text-align: center;
+  /* Align button text to center */
+  margin-top: 0.5 rem;
+  background-color: #FFFC47;
+  /* Set to match background color */
+}
+
+.buttons button {
+  display: inline-block;
+  /* Display buttons inline */
+}
+
+.cm-chessboard .coordinates,
+.cm-chessboard .markers-layer,
+.cm-chessboard .pieces-layer,
+.cm-chessboard .markers-top-layer {
+  pointer-events: none;
+}
+
+.cm-chessboard-content .list-inline {
+  padding-left: 0;
+  list-style: none;
+}
+
+.cm-chessboard-content .list-inline-item {
+  display: inline-block;
+}
+
+.cm-chessboard-content .list-inline-item:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.cm-chessboard-content .list-inline {
+  padding-left: 0;
+  list-style: none;
+}
+
+.cm-chessboard-content .list-inline-item {
+  display: inline-block;
+}
+
+.cm-chessboard-content .list-inline-item:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.cm-chessboard-accessibility.visually-hidden {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cm-chessboard.default .board .square.white {
+  fill: #FFFC47;
+}
+
+.cm-chessboard.default .board .square.black {
+  fill: #42210B;
+}
+
+.cm-chessboard.default.border-type-thin .board .border {
+  stroke: #c5a076;
+  stroke-width: 0.7%;
+  fill: #c5a076;
+}
+
+.cm-chessboard.default.border-type-none .board .border {
+  stroke: #c5a076;
+  stroke-width: 0;
+  fill: #c5a076;
+}
+
+.cm-chessboard.default.border-type-frame .board .border {
+  fill: #ecdab9;
+  stroke: none;
+}
+
+.cm-chessboard.default.border-type-frame .board .border-inner {
+  fill: #c5a076;
+  stroke: #c5a076;
+  stroke-width: 0.7%;
+}
+
+.cm-chessboard.default .coordinates {
+  pointer-events: none;
+  user-select: none;
+}
+
+.cm-chessboard.default .coordinates .coordinate {
+  fill: #b5936d;
+  font-size: 7px;
+  cursor: default;
+}
+
+.cm-chessboard.default .coordinates .coordinate.black {
+  fill: #42210B
+}
+
+.cm-chessboard.default .coordinates .coordinate.white {
+  fill: #FFFC47;
+}
+
+.cm-chessboard.default-contrast .board .square.white {
+  fill: #ecdab9;
+}
+
+.cm-chessboard.default-contrast .board .square.black {
+  fill: #c5a076;
+}
+
+.cm-chessboard.default-contrast.border-type-thin .board .border {
+  stroke: #c5a076;
+  stroke-width: 0.7%;
+  fill: #c5a076;
+}
+
+.cm-chessboard.default-contrast.border-type-none .board .border {
+  stroke: #c5a076;
+  stroke-width: 0;
+  fill: #c5a076;
+}
+
+.cm-chessboard.default-contrast.border-type-frame .board .border {
+  fill: #ecdab9;
+  stroke: none;
+}
+
+.cm-chessboard.default-contrast.border-type-frame .board .border-inner {
+  fill: #c5a076;
+  stroke: #c5a076;
+  stroke-width: 0.7%;
+}
+
+.cm-chessboard.default-contrast .coordinates {
+  pointer-events: none;
+  user-select: none;
+}
+
+.cm-chessboard.default-contrast .coordinates .coordinate {
+  fill: #b5936d;
+  font-size: 7px;
+  cursor: default;
+}
+
+.cm-chessboard.default-contrast .coordinates .coordinate.black {
+  fill: #333;
+}
+
+.cm-chessboard.default-contrast .coordinates .coordinate.white {
+  fill: #333;
+}
+
+
+
+body {
+  background-color: #FFFC47;
+
+}
+
+h1 {
+  font-size: 20px;
+  text-align: center;
+  color: #42210B;
+  padding-bottom: 1em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+</style>

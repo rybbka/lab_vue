@@ -7,16 +7,15 @@ import FooterComponent from './components/FooterComponent.vue'
 
 <template>
   <div>
-<!-- Navbar -->
+    <!-- Navbar -->
     <NavBar />
 
+    <!-- Main Content -->
+    <router-view> </router-view>
 
-
-<!-- Footer -->
+    <!-- Footer -->
     <FooterComponent />
   </div>
-
-
 </template>
 
 <style scoped>

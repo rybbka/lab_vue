@@ -1,71 +1,136 @@
 <template>
-  <header>
-    <!-- Navbar with a fixed position at the top of the page -->
-    <nav class="navbar bg-dark-green fixed-top">
-      <div class="container-fluid">
+  <!-- Navbar with a fixed position at the top of the page -->
+  <nav class="navbar yellow fixed-top">
+    <div class="container-fluid">
 
-        <!-- RouterLink functioning as a link to the home page with the text "CHESS PROBLEMS" -->
-        <RouterLink class="navbar-brand" to="/">CHESS PROBLEMS</RouterLink>
+      <!-- RouterLink functioning as a link to the home page with the text "CHESS PROBLEMS" -->
+      <RouterLink class="navbar-brand" to="/">(CP)</RouterLink>
 
-        <!-- Offcanvas menu toggle button -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+      <!-- Offcanvas menu toggle button -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+        aria-controls="offcanvasNavbar" @click="toggleOffcanvas">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <!-- Offcanvas menu -->
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body">
-            <!-- Navigation links for the home page and "About" page -->
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-              <li class="nav-item">
-                <RouterLink class="nav-link active" to="/">CHESS PROBLEMS</RouterLink>
-              </li>
-              <li class="nav-item">
-                <RouterLink class="nav-link" to="/about">ABOUT</RouterLink>
-              </li>
-            </ul>
-          </div>
+      <!-- Offcanvas menu -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <!-- Navigation links for the home page and "About" page -->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <RouterLink class="nav-link active" to="/">CHESS PUZZLES</RouterLink>
+            </li>
+
+            <li class="nav-item">
+              <RouterLink class="nav-link" to="/about">ABOUT (CP)</RouterLink>
+            </li>
+          </ul>
         </div>
       </div>
-    </nav>
-  </header>
-
-  <!-- RouterView is used to render the current routed component -->
-  <RouterView />
+    </div>
+  </nav>
 </template>
 
+<script>
+export default {
+  methods: {
+    toggleOffcanvas() {
+      // Implement your toggle logic here if needed
+    }
+  }
+};
+</script>
+
 <style scoped>
-/* Styles for header element, set line height and max height */
-header {
-  line-height: 0;
-  max-height: 50vh;
+
+
+.navbar-toggler-icon {
+  background-image: none;
+  width: 30px;
+  height: 3px;
+  background-color: #42210B;
+  position: relative;
+  display: inline-block;
 }
 
-/* Styles for offcanvas title, set text color to hot pink */
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: #42210B;
+  left: 0;
+}
+
+.navbar-toggler-icon::before {
+  top: -8px;
+}
+
+.navbar-toggler-icon::after {
+  bottom: -8px;
+}
+
+
+
+
+
+/* Styles for offcanvas title */
 .offcanvas-title {
-  color: #ff69b4;
+  color: #42210B;
 }
 
-/* Styles for navbar-brand, set text color to white */
+.offcanvas-body {
+  background-color: #FFFC47;
+}
+
+.offcanvas-header {
+  background-color: #FFFC47;
+}
+
+/* Styles for navbar-brand */
 .navbar-brand {
-  color: #ffffff; /* Change to white */
-  font-size: 20px; /* Adjust font size */
-  padding: 5px 10px; /* Adjust padding */
+  color: #42210B;
+  /* Change to white */
+  font-size: 40px;
+  /* Adjust font size */
+  padding: 5px 10px;
+  /* Adjust padding */
 }
 
-/* Styles for navbar-toggler, set background color to white */
+/* Styles for navbar-toggler */
 .navbar-toggler {
-  background-color: #ffffff; /* Change to white */
+  background-color: #FFFC47;
+  border: none; /* Removes the border */
+  background-color: transparent; /* Makes the background transparent */
 }
 
-/* New styles for navbar */
+/* Styles for navbar */
 .navbar {
-  background-color: #031e03; /* Change background color to dark green */
-  height: 90px; /* Adjust height */
-  padding: 5px; /* Adjust padding */
+  background-color: #FFFC47;
+  /* Change background color */
+  height: 50px;
+  /* Adjust height */
+  padding: 5px;
+  /* Adjust padding */
+  z-index: 1000; /* Ensures they appear above other content */
 }
+
+/* Adjust hamburger icon styles */
+.navbar-toggler-icon {
+  background-image: none;
+  width: 30px;
+  height: 3px;
+  background-color: #42210B;
+}
+
+/* Offcanvas menu styles */
+.offcanvas {
+  background-color: #FFFC47;
+}
+
 </style>

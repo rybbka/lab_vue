@@ -1,26 +1,25 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink } from 'vue-router';
 </script>
 
 <template>
-   <footer class="site-footer">
-      <div class="footer-container">
-        <RouterLink class="footer-brand" to="/">CHESS PROBLEMS</RouterLink>
-        <div class="footer-links">
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">I</a>
-          <RouterLink to="/about">INSTAGRAM</RouterLink>
-        </div>
+  <footer class="site-footer">
+    <div class="footer-container">
+      <RouterLink class="footer-brand" to="/">(CP) CHESS PUZZLES v.1</RouterLink>
+      <div class="footer-links">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"></a>
+        <RouterLink to="/about">CONTACT</RouterLink>
       </div>
-    </footer>
+    </div>
+  </footer>
 </template>
 
 <style scoped>
 .site-footer {
   width: 100%;
-  background-color: #C9C5BE;
-  /* Eller vilken färg som passar med din webbplats */
-  color:#1E0A0A;
-  padding: 15px 0;
+  background-color: #FFFC47;
+  color: #42210B;
+  padding: 0.5em;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -30,17 +29,17 @@ import { RouterLink, RouterView } from 'vue-router';
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 5%;
+  padding: 0.5em;
 }
 
 .footer-brand {
-  color: #1E0A0A;
+  color: #42210B;
   text-decoration: none;
 }
 
 .footer-links a,
 .footer-links router-link {
-  color: #1E0A0A;
+  color: #42210B;
   margin-left: 20px;
   text-decoration: none;
 }
