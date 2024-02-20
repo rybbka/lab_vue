@@ -6,9 +6,9 @@
     <div class="puzzle-status">{{ puzzleStatus }}</div>
     <div class="moves">
       <input type="checkbox" id="show-moves" v-model="showMoves" />
-      <label for="show-moves">Show moves</label>
+      <label for="show-moves">SHOW SOLUTION</label>
       <div v-if="showMoves" class="moves-list">
-        {{ moves }}
+        {{ displayMoves() }}
       </div>
     </div>
     <div class="buttons">
@@ -27,11 +27,13 @@ import { markRaw } from 'vue';
 
 
 
+
+
 export default {
   props: {
     fen: String,
     currentIndex: Number,
-    moves: Boolean,
+    moves: String || Array,
     totalPuzzles: Number,
   },
 
@@ -63,7 +65,7 @@ export default {
 
       this.chessboard = new Chessboard(this.$refs.board, {
         position: markRaw(this.fen),
-        assetsUrl: "./public/cm-chessboard/",
+        assetsUrl: "./cm-chessboard/",
         extensions: [
           { class: Markers, props: { autoMarkers: MARKER_TYPE.square } },
           { class: PromotionDialog },
@@ -96,6 +98,15 @@ export default {
       }
     },
 
+    displayMoves() {
+      // Backup puzzles have moves as string but api returs them as array
+      if (Array.isArray(this.moves)) {
+        return this.moves.join(' ');
+      } else {
+        return this.moves;
+      }
+    },
+
     fetchNewPuzzle() {
       console.log('Fetch new puzzle method called');
       this.$emit('fetchNewPuzzle');
@@ -114,7 +125,7 @@ export default {
 .puzzle-status {
   font-size: 0.8em;
   /* Adjust the font size */
-  color: #333;
+  color: #42210B;
   /* Set the text color */
   text-align: center;
   /* Center the text */
@@ -144,13 +155,10 @@ export default {
   /* Add margin between chessboard and buttons */
 }
 
-.buttons {
-  margin-top: 1rem;
-  padding-bottom: 6rem;
-  /* Adjust margin top to move buttons closer */
-}
+
 
 .buttons button {
+  display: inline-block;
   margin-right: 2rem;
   margin-left: 2rem;
   background-color: #FFFC47;
@@ -176,26 +184,25 @@ div.board {
   margin: auto;
 }
 
-.buttons {
 
-  margin-top: 0.5rem;
-  background-color: #FFFC47;
-  /* Set to match background color */
-}
 
 .buttons {
   display: block;
   /* Change from flex to block */
   text-align: center;
   /* Align button text to center */
-  margin-top: 0.5 rem;
+  margin-top: 1rem;
+  padding-bottom: 6rem;
   background-color: #FFFC47;
   /* Set to match background color */
 }
 
-.buttons button {
-  display: inline-block;
-  /* Display buttons inline */
+.moves {
+  text-align: center;
+  margin-bottom: 1rem;
+  background-color: #FFFC47;
+  font-size: 0.8em;
+  /* Set to match background color */
 }
 
 .cm-chessboard .coordinates,
@@ -356,5 +363,32 @@ h1 {
   padding-bottom: 1em;
   margin-top: 2em;
   margin-bottom: 1em;
+}
+
+/* Hover effect */
+.main:hover input~.checkbox-container {
+  background-color: yellow;
+}
+
+/* Active effect */
+.main input:active~.checkbox-container {
+  background-color: red;
+}
+
+/* Checked effect */
+.main input:checked~.checkbox-container {
+  background-color: green;
+}
+
+/* Checkmark */
+.checkbox-container:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Display checkmark when checked */
+.main input:checked~.checkbox-container:after {
+  display: block;
 }
 </style>
