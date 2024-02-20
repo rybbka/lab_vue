@@ -4,6 +4,13 @@
       <div ref="board" class="board" id="board"></div>
     </div>
     <div class="puzzle-status">{{ puzzleStatus }}</div>
+    <div class="moves">
+      <input type="checkbox" id="show-moves" v-model="showMoves" />
+      <label for="show-moves">Show moves</label>
+      <div v-if="showMoves" class="moves-list">
+        {{ moves }}
+      </div>
+    </div>
     <div class="buttons">
       <button @click="fetchNewPuzzle">New Puzzle</button>
       <button @click="resetBoard()">Reset Board</button>
@@ -24,6 +31,7 @@ export default {
   props: {
     fen: String,
     currentIndex: Number,
+    moves: Boolean,
     totalPuzzles: Number,
   },
 
@@ -38,6 +46,8 @@ export default {
       chessboard: null,
       game: new Chess(markRaw(this.fen)),
       useCustomPieces: false,
+      username: '',
+      showMoves: false
     };
   },
   mounted() {

@@ -1,10 +1,10 @@
 <template>
   <main>
-    <h1>"THINK BEFORE YOU MOVE"</h1>
+    <h1>THINK BEFORE YOU MOVE</h1>
 
-    <div v-if="chessPuzzles && chessPuzzles.length > 0">
+    <div v-if="chessPuzzles && chessPuzzles.length > 0" class="main-container">
       <ChessPuzzle :fen="chessPuzzles[currentIndex].fen" :currentIndex="currentIndex" :totalPuzzles="chessPuzzles.length"
-        @updateIndex="updateCurrentIndex" @fetchNewPuzzle="fetchNewPuzzle" />
+        :moves="chessPuzzles[currentIndex].moves" @updateIndex="updateCurrentIndex" @fetchNewPuzzle="fetchNewPuzzle" />
     </div>
     <div v-else>
       Loading chess puzzles...
@@ -15,6 +15,7 @@
 <script>
 import axios from 'axios';
 import ChessPuzzle from '@/components/ChessPuzzle.vue';
+import { puzzles } from '@/data/puzzles.js';
 
 export default {
   components: {
@@ -41,6 +42,7 @@ export default {
           playerMoves: '4',
           count: '25'
         },
+        timeout: 1000,
         headers: {
           'X-RapidAPI-Key': 'be0e2c4958msh4c8518f1aaa0ddcp1587c9jsn88949b61706e',
           'X-RapidAPI-Host': 'chess-puzzles.p.rapidapi.com'
@@ -52,6 +54,7 @@ export default {
         this.chessPuzzles = response.data.puzzles;
       } catch (error) {
         console.error('Fel vid hämtning av schackpussel:', error);
+        this.chessPuzzles = puzzles;
       }
     },
     updateCurrentIndex(newIndex) {
@@ -68,5 +71,4 @@ export default {
 h1 {
   padding-top: 20px;
 }
-
 </style>
