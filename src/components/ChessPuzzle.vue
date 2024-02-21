@@ -13,6 +13,7 @@
       <button @click="resetBoard()">Reset Board</button>
     </div>
     <!-- Alternativ för att visa drag (lösningen) för det aktuella pusslet -->
+    
     <div class="moves">
       <input type="checkbox" id="show-moves" v-model="showMoves" />
       <label for="show-moves">SHOW SOLUTION</label>
