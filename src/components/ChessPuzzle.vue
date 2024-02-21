@@ -1,17 +1,22 @@
 <template>
   <div class="container">
+    <!-- Schackbrädet och dess container -->
     <div class="chessboard-container">
       <div ref="board" class="board" id="board"></div>
     </div>
+    <!-- Visar status för det aktuella pusslet, t.ex. "PUZZLE 1 / 10" -->
     <div class="puzzle-status">{{ puzzleStatus }}</div>
 
+    <!-- Knappar för att hämta ett nytt pussel och återställa brädet -->
     <div class="buttons">
       <button @click="fetchNewPuzzle">New Puzzle</button>
       <button @click="resetBoard()">Reset Board</button>
     </div>
+    <!-- Alternativ för att visa drag (lösningen) för det aktuella pusslet -->
     <div class="moves">
       <input type="checkbox" id="show-moves" v-model="showMoves" />
       <label for="show-moves">SHOW SOLUTION</label>
+      <!-- Lista som visar pusslets drag om 'showMoves' är sann -->
       <ul v-if="showMoves" class="moves-list">
         <li v-for="(move, index) in moves" :key="index">
           {{ move }}
@@ -21,27 +26,24 @@
   </div>
 </template>
 
-
 <script>
+// Importerar nödvändiga bibliotek och komponenter
 import { Chessboard, INPUT_EVENT_TYPE } from 'cm-chessboard';
 import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Markers.js";
 import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog.js";
 import { Chess } from 'chess.js';
 import { markRaw } from 'vue';
 
-
-
-
-
 export default {
   props: {
     fen: String,
     currentIndex: Number,
-    moves: String || Array,
+    moves: [String, Array],
     totalPuzzles: Number,
   },
 
   computed: {
+    // Beräknar och visar status för det aktuella pusslet
     puzzleStatus() {
       return `PUZZLE ${this.currentIndex + 1} / ${this.totalPuzzles}`;
     }
@@ -49,47 +51,50 @@ export default {
 
   data() {
     return {
-      chessboard: null,
-      game: new Chess(markRaw(this.fen)),
-      useCustomPieces: false,
-      username: '',
-      showMoves: false
+      chessboard: null, // Referens till schackbrädet
+      game: new Chess(markRaw(this.fen)), // Initierar ett schackspel med startpositionen från FEN
+      useCustomPieces: false, // Anger om anpassade pjäser ska användas
+      username: '', // Användarnamn (ej använd i denna komponent)
+      showMoves: false // Anger om lösningen (drag) ska visas
     };
   },
   mounted() {
+    // Initierar schackbrädet när komponenten är monterad
     this.initializeChessboard();
   },
   watch: {
+    // Uppdaterar brädets position när 'fen'-prop ändras
     fen(newFen) {
       this.chessboard.setPosition(newFen);
     }
   },
   methods: {
+    // Initierar och konfigurerar schackbrädet
     initializeChessboard() {
-
       this.chessboard = new Chessboard(this.$refs.board, {
-        position: markRaw(this.fen),
-        assetsUrl: "./cm-chessboard/",
+        position: markRaw(this.fen), // Sätter startpositionen för brädet
+        assetsUrl: "./cm-chessboard/", // Sökväg till schackbrädets resurser
         extensions: [
           { class: Markers, props: { autoMarkers: MARKER_TYPE.square } },
           { class: PromotionDialog },
         ]
       });
 
-      // Bind the input handler to the component's context
+      // Binder händelsehanteraren för input till denna komponents kontext
       const inputHandlerBound = this.inputHandler.bind(this);
       this.chessboard.enableMoveInput(inputHandlerBound);
     },
 
+    // Hanterar olika typer av input-händelser på schackbrädet
     inputHandler(event) {
       console.log(event)
       switch (event.type) {
         case INPUT_EVENT_TYPE.moveInputStarted:
           console.log(`moveInputStarted: ${event.squareFrom}`)
-          return true // false cancels move
+          return true // false avbryter draget
         case INPUT_EVENT_TYPE.validateMoveInput:
           console.log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)
-          return true // false cancels move
+          return true // false avbryter draget
         case INPUT_EVENT_TYPE.moveInputCanceled:
           console.log(`moveInputCanceled`)
           break
@@ -102,8 +107,9 @@ export default {
       }
     },
 
+    // Visar pusslets drag
     displayMoves() {
-      // Backup puzzles have moves as string but api returs them as array
+      // Hanterar om 'moves' är en sträng eller en array och konverterar till en sträng
       if (Array.isArray(this.moves)) {
         return this.moves.join(' ');
       } else {
@@ -111,13 +117,13 @@ export default {
       }
     },
 
+    // Meddelar föräldrakomponenten att hämta ett nytt pussel
     fetchNewPuzzle() {
       console.log('Fetch new puzzle method called');
       this.$emit('fetchNewPuzzle');
-      // Använd detta event för att meddela din föräldrakomponent att hämta ett nytt pussel
     },
+    // Återställer schackbrädet till dess ursprungliga position baserat på FEN
     resetBoard() {
-      // Återställer brädet till det aktuella FEN-läget
       console.log('Reset board method called')
       this.chessboard.setPosition(this.fen);
     },
@@ -125,29 +131,21 @@ export default {
 }
 </script>
 
+<!-- Stilsektionen definierar utseendet för olika delar av komponenten, inklusive schackbrädet, knapparna och texten -->
 <style scoped>
+/* Stil för pusselstatus */
 .puzzle-status {
   font-size: 0.8em;
-  /* Adjust the font size */
   color: #42210B;
-  /* Set the text color */
   text-align: center;
-  /* Center the text */
   padding: 20px;
-  /* Add some padding for spacing */
   margin: 10px 0;
-  /* Add margin for spacing from other elements */
   width: auto;
-  /* Adjust width as needed */
 }
 </style>
 
-
-
-
 <style>
-/* Add CSS styles for the ChessPuzzle component here */
-
+/* Stilar för container, schackbrädet, knappar och draglistan */
 .container {
   display: flex;
   flex-direction: column;
@@ -156,23 +154,18 @@ export default {
 
 .chessboard-container {
   margin-bottom: 0.5rem;
-  /* Add margin between chessboard and buttons */
 }
-
-
 
 .buttons button {
   display: inline-block;
   margin-right: 2rem;
   margin-left: 2rem;
   background-color: #FFFC47;
-  /* Set to match background color */
 }
 
 div.board {
   float: center;
   max-width: 500px;
-  /* Maximum width */
   width: 80vw;
   margin-bottom: 1rem;
 }
@@ -181,23 +174,16 @@ div.board {
   display: flex;
   justify-content: center;
   max-width: 500px;
-  /* Maximum width */
   width: 80vw;
   max-height: 80vh;
-  /* Maximum height */
 }
-
-
 
 .buttons {
   display: block;
-  /* Change from flex to block */
   text-align: center;
-  /* Align button text to center */
   margin-top: 1rem;
   padding-bottom: 2rem;
   background-color: #FFFC47;
-  /* Set to match background color */
 }
 
 .moves {
@@ -205,27 +191,15 @@ div.board {
   margin-bottom: 6rem;
   background-color: #FFFC47;
   font-size: 0.8em;
-  /* Set to match background color */
+  color: #42210B;
 }
 
+/* Stilar för schackbrädets utseende och beteende */
 .cm-chessboard .coordinates,
 .cm-chessboard .markers-layer,
 .cm-chessboard .pieces-layer,
 .cm-chessboard .markers-top-layer {
   pointer-events: none;
-}
-
-.cm-chessboard-content .list-inline {
-  padding-left: 0;
-  list-style: none;
-}
-
-.cm-chessboard-content .list-inline-item {
-  display: inline-block;
-}
-
-.cm-chessboard-content .list-inline-item:not(:last-child) {
-  margin-right: 1rem;
 }
 
 .cm-chessboard-content .list-inline {
@@ -252,6 +226,7 @@ div.board {
   border: 0;
 }
 
+/* Stilar för anpassning av schackbrädets färger */
 .cm-chessboard.default .board .square.white {
   fill: #FFFC47;
 }
@@ -260,38 +235,10 @@ div.board {
   fill: #42210B;
 }
 
-.cm-chessboard.default.border-type-thin .board .border {
-  stroke: #c5a076;
-  stroke-width: 0.7%;
-  fill: #c5a076;
-}
-
-.cm-chessboard.default.border-type-none .board .border {
-  stroke: #c5a076;
-  stroke-width: 0;
-  fill: #c5a076;
-}
-
-.cm-chessboard.default.border-type-frame .board .border {
-  fill: #ecdab9;
-  stroke: none;
-}
-
-.cm-chessboard.default.border-type-frame .board .border-inner {
-  fill: #c5a076;
-  stroke: #c5a076;
-  stroke-width: 0.7%;
-}
-
-.cm-chessboard.default .coordinates {
-  pointer-events: none;
-  user-select: none;
-}
-
+/* Stilar för koordinater och rutor på schackbrädet */
 .cm-chessboard.default .coordinates .coordinate {
   fill: #b5936d;
   font-size: 7px;
-  cursor: default;
 }
 
 .cm-chessboard.default .coordinates .coordinate.black {
@@ -302,61 +249,9 @@ div.board {
   fill: #FFFC47;
 }
 
-.cm-chessboard.default-contrast .board .square.white {
-  fill: #ecdab9;
-}
-
-.cm-chessboard.default-contrast .board .square.black {
-  fill: #c5a076;
-}
-
-.cm-chessboard.default-contrast.border-type-thin .board .border {
-  stroke: #c5a076;
-  stroke-width: 0.7%;
-  fill: #c5a076;
-}
-
-.cm-chessboard.default-contrast.border-type-none .board .border {
-  stroke: #c5a076;
-  stroke-width: 0;
-  fill: #c5a076;
-}
-
-.cm-chessboard.default-contrast.border-type-frame .board .border {
-  fill: #ecdab9;
-  stroke: none;
-}
-
-.cm-chessboard.default-contrast.border-type-frame .board .border-inner {
-  fill: #c5a076;
-  stroke: #c5a076;
-  stroke-width: 0.7%;
-}
-
-.cm-chessboard.default-contrast .coordinates {
-  pointer-events: none;
-  user-select: none;
-}
-
-.cm-chessboard.default-contrast .coordinates .coordinate {
-  fill: #b5936d;
-  font-size: 7px;
-  cursor: default;
-}
-
-.cm-chessboard.default-contrast .coordinates .coordinate.black {
-  fill: #333;
-}
-
-.cm-chessboard.default-contrast .coordinates .coordinate.white {
-  fill: #333;
-}
-
-
-
+/* Ytterligare stilar för bakgrund och text */
 body {
   background-color: #FFFC47;
-
 }
 
 h1 {
@@ -366,32 +261,5 @@ h1 {
   padding-bottom: 1em;
   margin-top: 2em;
   margin-bottom: 1em;
-}
-
-/* Hover effect */
-.main:hover input~.checkbox-container {
-  background-color: yellow;
-}
-
-/* Active effect */
-.main input:active~.checkbox-container {
-  background-color: red;
-}
-
-/* Checked effect */
-.main input:checked~.checkbox-container {
-  background-color: green;
-}
-
-/* Checkmark */
-.checkbox-container:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Display checkmark when checked */
-.main input:checked~.checkbox-container:after {
-  display: block;
 }
 </style>
