@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>THINK BEFORE YOU MOVE</h1>
+    <h1>"THINK BEFORE YOU MOVE"</h1>
 
     <div v-if="chessPuzzles && chessPuzzles.length > 0" class="main-container">
       <ChessPuzzle :fen="chessPuzzles[currentIndex].fen" :currentIndex="currentIndex" :totalPuzzles="chessPuzzles.length"
@@ -40,7 +40,7 @@ export default {
           rating: '1500',
           themesType: 'ALL',
           playerMoves: '4',
-          count: '25'
+          count: '300'
         },
         timeout: 1000,
         headers: {

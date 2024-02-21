@@ -113,7 +113,7 @@ export default {
 .navbar {
   background-color: #FFFC47;
   /* Change background color */
-  height: 50px;
+  height: 80px;
   /* Adjust height */
   padding: 5px;
   /* Adjust padding */

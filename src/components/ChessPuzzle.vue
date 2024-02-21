@@ -4,19 +4,23 @@
       <div ref="board" class="board" id="board"></div>
     </div>
     <div class="puzzle-status">{{ puzzleStatus }}</div>
-    <div class="moves">
-      <input type="checkbox" id="show-moves" v-model="showMoves" />
-      <label for="show-moves">SHOW SOLUTION</label>
-      <div v-if="showMoves" class="moves-list">
-        {{ displayMoves() }}
-      </div>
-    </div>
+
     <div class="buttons">
       <button @click="fetchNewPuzzle">New Puzzle</button>
       <button @click="resetBoard()">Reset Board</button>
     </div>
+    <div class="moves">
+      <input type="checkbox" id="show-moves" v-model="showMoves" />
+      <label for="show-moves">SHOW SOLUTION</label>
+      <ul v-if="showMoves" class="moves-list">
+        <li v-for="(move, index) in moves" :key="index">
+          {{ move }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
+
 
 <script>
 import { Chessboard, INPUT_EVENT_TYPE } from 'cm-chessboard';
@@ -181,7 +185,6 @@ div.board {
   width: 80vw;
   max-height: 80vh;
   /* Maximum height */
-  margin: auto;
 }
 
 
@@ -192,14 +195,14 @@ div.board {
   text-align: center;
   /* Align button text to center */
   margin-top: 1rem;
-  padding-bottom: 6rem;
+  padding-bottom: 2rem;
   background-color: #FFFC47;
   /* Set to match background color */
 }
 
 .moves {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 6rem;
   background-color: #FFFC47;
   font-size: 0.8em;
   /* Set to match background color */

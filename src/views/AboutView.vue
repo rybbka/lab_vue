@@ -1,7 +1,7 @@
 <template>
   <div class="about">
 
-    <h1>We are (CP) and we are on a relentless quest to unearth the finest chess puzzles, offering them to you, our fellow aficionados, free of charge, for eternity. Join us in this journey of exploration and enlightenment, where the thrill of the game knows no bounds.</h1>
+    <h1>(CP) is a relentless quest to unearth the finest chess puzzles, offering them to you, our fellow aficionados, free of charge, 4ever. </h1>
   </div>
 </template>
 
