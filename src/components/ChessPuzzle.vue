@@ -13,7 +13,7 @@
       <button @click="resetBoard()">Reset Board</button>
     </div>
     <!-- Alternativ för att visa drag (lösningen) för det aktuella pusslet -->
-    
+
     <div class="moves">
       <input type="checkbox" id="show-moves" v-model="showMoves" />
       <label for="show-moves">SHOW SOLUTION</label>
@@ -55,7 +55,6 @@ export default {
       chessboard: null, // Referens till schackbrädet
       game: new Chess(markRaw(this.fen)), // Initierar ett schackspel med startpositionen från FEN
       useCustomPieces: false, // Anger om anpassade pjäser ska användas
-      username: '', // Användarnamn (ej använd i denna komponent)
       showMoves: false // Anger om lösningen (drag) ska visas
     };
   },
@@ -92,10 +91,10 @@ export default {
       switch (event.type) {
         case INPUT_EVENT_TYPE.moveInputStarted:
           console.log(`moveInputStarted: ${event.squareFrom}`)
-          return true // false avbryter draget
+          return true
         case INPUT_EVENT_TYPE.validateMoveInput:
           console.log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)
-          return true // false avbryter draget
+          return true
         case INPUT_EVENT_TYPE.moveInputCanceled:
           console.log(`moveInputCanceled`)
           break
@@ -132,7 +131,7 @@ export default {
 }
 </script>
 
-<!-- Stilsektionen definierar utseendet för olika delar av komponenten, inklusive schackbrädet, knapparna och texten -->
+<!-- Stilsektionen  -->
 <style scoped>
 /* Stil för pusselstatus */
 .puzzle-status {
@@ -208,26 +207,8 @@ div.board {
   list-style: none;
 }
 
-.cm-chessboard-content .list-inline-item {
-  display: inline-block;
-}
 
-.cm-chessboard-content .list-inline-item:not(:last-child) {
-  margin-right: 1rem;
-}
-
-.cm-chessboard-accessibility.visually-hidden {
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Stilar för anpassning av schackbrädets färger */
+/* Schackbrädets färger */
 .cm-chessboard.default .board .square.white {
   fill: #FFFC47;
 }
@@ -236,11 +217,7 @@ div.board {
   fill: #42210B;
 }
 
-/* Stilar för koordinater och rutor på schackbrädet */
-.cm-chessboard.default .coordinates .coordinate {
-  fill: #b5936d;
-  font-size: 7px;
-}
+
 
 .cm-chessboard.default .coordinates .coordinate.black {
   fill: #42210B
