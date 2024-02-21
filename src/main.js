@@ -13,10 +13,11 @@ import router from './router'
 
 const app = createApp(App)
 
+// För att importer ska fungera behöver man använda ett middleware "use"
 app.use(createPinia())
 app.use(router)
 
-// För att importer ska fungera behöver man använda ett middleware "use"
+
 app.use(bootstrap)
 
 app.mount('#app')
