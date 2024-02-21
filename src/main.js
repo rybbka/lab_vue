@@ -4,10 +4,10 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 // Importera bootstrap CSS stilar
-import 'bootstrap/dist/css/bootstrap.css'
+import "bootstrap/dist/css/bootstrap.css"
 
 // Importera bootstrap JS filer
-import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js'
+import "bootstrap" 
 import App from './App.vue'
 import router from './router'
 
@@ -18,6 +18,6 @@ app.use(createPinia())
 app.use(router)
 
 
-app.use(bootstrap)
+
 
 app.mount('#app')
